@@ -19,6 +19,7 @@
     $source_filename = pathinfo($source_file, PATHINFO_FILENAME);
     $source_ext      = pathinfo($source_file, PATHINFO_EXTENSION);
     $at2x_file       = $source_dirname.'/'.$source_filename.'@2x.'.$source_ext;
+    $at2x_filejoomla = $source_dirname.'/'.$source_filename.'2x.'.$source_ext;
     $at3x_file       = $source_dirname.'/'.$source_filename.'@3x.'.$source_ext;
     $at4x_file       = $source_dirname.'/'.$source_filename.'@4x.'.$source_ext;
     $cache_directive = 'must-revalidate';
@@ -34,6 +35,7 @@
         fwrite($_debug_fh, "source_file:       {$source_file}\n");
         fwrite($_debug_fh, "source_ext:        {$source_ext}\n");
         fwrite($_debug_fh, "@2x_file:          {$at2x_file}\n");
+        fwrite($_debug_fh, "@2x_filejoomla:    {$at2x_filejoomla}\n");
         fwrite($_debug_fh, "@3x_file:          {$at3x_file}\n");
         fwrite($_debug_fh, "@4x_file:          {$at4x_file}\n");
     }
@@ -59,7 +61,7 @@
         // No need to check for retina images if screen is low DPR
         if ($cookie_value !== false && $cookie_value > 1) {
             // Check over images and match the largest resolution available
-            foreach (array($at4x_file => 3, $at3x_file => 2, $at2x_file => 1) as $retina_file => $min_dpr) {
+            foreach (array($at4x_file => 3, $at3x_file => 2, $at2x_file => 1, $at2x_filejoomla => 1) as $retina_file => $min_dpr) {
                 if ($cookie_value > $min_dpr && file_exists($retina_file)) {
                     $source_file = $retina_file;
                     $status = 'retina image';
@@ -71,7 +73,7 @@
         // Check if we can shrink a larger version of the image
         if (!file_exists($source_file) && DOWNSIZE_NOT_FOUND){
             // Check over increasingly larger images and see if one is available
-            foreach (array($at2x_file, $at3x_file, $at4x_file) as $retina_file) {
+            foreach (array($at2x_file, $at2x_filejoomla, $at3x_file, $at4x_file) as $retina_file) {
                 if (file_exists($retina_file)) {
                     $source_file = $retina_file;
                     $status = 'downsized image';
